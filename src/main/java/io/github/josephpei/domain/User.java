@@ -1,6 +1,8 @@
 package io.github.josephpei.domain;
 
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,8 +10,11 @@ public class User implements Serializable{
     private static final long serialVersionUID = 1L;
 
     private int userId;
+
     private String userName;
+
     private String password;
+
     private String lastIp;
     private Date lastVisit;
 

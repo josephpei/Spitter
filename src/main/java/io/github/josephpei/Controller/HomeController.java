@@ -1,6 +1,6 @@
 package io.github.josephpei.Controller;
 
-import com.google.code.kaptcha.servlet.KaptchaExtend;
+
 import io.github.josephpei.Service.UserService;
 import io.github.josephpei.domain.LoginCommand;
 import io.github.josephpei.domain.User;
@@ -8,51 +8,55 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.validation.Valid;
+
 import java.util.Date;
 
 @Controller
-public class HomeController extends KaptchaExtend {
+public class HomeController {
     private static String salt = "SECRET";
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/captcha.jpg", method = RequestMethod.GET)
-    public void captcha(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.captcha(req, resp);
-    }
+//    @RequestMapping(value={"/", "/home.html"}, method = RequestMethod.GET)
+//    public String hello() {
+//        return "home";
+//    }
 
-    @RequestMapping(value={"/", "/home.html"}, method = RequestMethod.GET)
-    public String hello() {
+    @RequestMapping(value="/", method = RequestMethod.GET)
+    public String loginCommand(Model model){
+        model.addAttribute("loginCommand", new LoginCommand());
         return "home";
     }
 
-    @RequestMapping(value="/login.do", method = RequestMethod.POST)
-    public ModelAndView loginCheck(HttpServletRequest request,
-                                   @RequestParam(value = "name", required = true) String name,
-                                   @RequestParam(value = "pass", required = true) String pass,
-                                   @RequestParam(value = "captcha", required = true) String kaptchaReceived) {
+    @RequestMapping(value="/", method = RequestMethod.POST)
+    public ModelAndView loginCheck(@ModelAttribute("loginCommand") @Valid LoginCommand loginCommand,
+                                   BindingResult result,
+                                   HttpServletRequest request, Model model) {
+        String kaptchaReceived = loginCommand.getCaptcha();
+        String name = loginCommand.getName();
+        String pass = loginCommand.getPass();
+
+        if (result.hasErrors()) {
+            return new ModelAndView("home");
+        }
         //用户输入的验证码的值
         String kaptchaExpected = (String) request.getSession().getAttribute(
                 com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
         //校验验证码是否正确
         if (kaptchaReceived == null || !kaptchaReceived.equals(kaptchaExpected)) {
-            return new ModelAndView("home");//返回验证码错误
+            return new ModelAndView("home", "yzm", "Kaptcha error");//返回验证码错误
         }
         String secretPass = DigestUtils.md5Hex(salt + pass);
         boolean valid = userService.hasMatchUser(name, secretPass);
         if (!valid) {
-            return new ModelAndView("home", "error", "Username or password error!");
+            return new ModelAndView("redirect:home", "fatal", "Username or password error!");
         } else {
             User user = userService.findUserByName(name);
             user.setLastIp(request.getRemoteAddr());
