@@ -47,4 +47,6 @@ public class JdbcUserDao implements UserDao {
         String sql = "insert into user_tbl (user_name, password, last_visit, last_ip) values (?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getLastVisit(), user.getLastIp());
     }
+
+
 }

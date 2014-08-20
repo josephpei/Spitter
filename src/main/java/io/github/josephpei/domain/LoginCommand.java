@@ -1,42 +1,38 @@
 package io.github.josephpei.domain;
 
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class LoginCommand {
-    @NotNull
     @Size(min=5, max=20)
-    private String name;
+    private String username;
 
-    @NotNull
     @Size(min=5, max=20)
-    private String pass;
+    private String password;
 
-    @NotNull
-    private String captcha;
+//    private String kaptcha;
+//
+//    public String getKaptcha() {
+//        return kaptcha;
+//    }
+//
+//    public void setKaptcha(String kaptcha) {
+//        this.kaptcha = kaptcha;
+//    }
 
-    public String getCaptcha() {
-        return captcha;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCaptcha(String captcha) {
-        this.captcha = captcha;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public String getPassword() {
+        return password;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPass() {
-        return pass;
-    }
-
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
