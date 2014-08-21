@@ -1,10 +1,13 @@
 package io.github.josephpei.Controller;
 
 
+import io.github.josephpei.Service.HibSpittleService;
+import io.github.josephpei.Service.HibUserService;
 import io.github.josephpei.Service.UserService;
 import io.github.josephpei.Utils.RegistrationValidator;
 import io.github.josephpei.domain.LoginCommand;
 import io.github.josephpei.domain.RegisterCommand;
+import io.github.josephpei.domain.Spittle;
 import io.github.josephpei.domain.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class HomeController {
@@ -25,7 +30,11 @@ public class HomeController {
     //private static final int DEFAULT_SPITTERS_PER_PAGE = 25;
 
     @Autowired
-    private UserService userService;
+    private HibUserService hibUserService;
+    //private UserService userService;
+
+    @Autowired
+    private HibSpittleService hibSpittleService;
 
     @Autowired
     private RegistrationValidator registrationValidator;
@@ -38,6 +47,8 @@ public class HomeController {
 
     @RequestMapping(value="/", method = RequestMethod.GET)
     public String loginCommand(Model model){
+        List<Spittle> spittleList = hibSpittleService.getRecentSpittles(5);
+        model.addAttribute("spittleList", spittleList);
         model.addAttribute("loginCommand", new LoginCommand());
         return "home";
     }
@@ -61,25 +72,19 @@ public class HomeController {
 //            return new ModelAndView("home", "yzm", "Kaptcha error");
 //        }
         String secretPass = DigestUtils.md5Hex(salt + pass);
-        boolean valid = userService.hasMatchUser(name, secretPass);
+        boolean valid = hibUserService.hasMatchUser(name, secretPass);
         if (!valid) {
             return new ModelAndView("redirect:/", "fatal", "Username or password error!");
         } else {
-            User user = userService.findUserByName(name);
+            User user = hibUserService.findUserByName(name);
             user.setLastIp(request.getRemoteAddr());
-            user.setLastVisit(new Date());
-            userService.loginSuccess(user);
+            user.setLastVisit(new java.sql.Timestamp((new java.util.Date()).getTime()));
+            hibUserService.loginSuccess(user);
             request.getSession().setAttribute("user", user);
-            String userPage = "redirect:user/" + name;
+            String userPage ="redirect:user_home";// "redirect:user/" + name;
             return new ModelAndView(userPage);
         }
 
-    }
-
-    @RequestMapping(value="/user/{name}")
-    public ModelAndView userPage(@PathVariable String name, HttpServletRequest request, Model model) {
-        model.addAttribute("name", name);
-        return new ModelAndView("sucess");
     }
 
     @RequestMapping(value="register.html", method=RequestMethod.GET)
@@ -103,7 +108,7 @@ public class HomeController {
         user.setPassword(DigestUtils.md5Hex(salt + registerCommand.getPassword()));
         user.setLastIp(request.getRemoteAddr());
         user.setLastVisit(new Date());
-        userService.insertUser(user);
+        hibUserService.insertUser(user);
 
         model.addAttribute("loginCommand", new LoginCommand());
         return "home";

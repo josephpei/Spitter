@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 
 @Repository
@@ -18,9 +19,9 @@ public class JdbcUserDao implements UserDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public Integer getMatchCount(String userName, String password) {
+    public Long getMatchCount(String userName, String password) {
         String sql = "SELECT count(*) FROM user_tbl WHERE user_name=? and password=?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, userName, password);
+        return jdbcTemplate.queryForObject(sql, Long.class, userName, password);
     }
 
     public User findUserByName(final String userName) {
@@ -30,12 +31,17 @@ public class JdbcUserDao implements UserDao {
                     @Override
                     public User mapRow(ResultSet resultSet, int i) throws SQLException {
                         User user = new User();
-                        user.setUserId(resultSet.getInt("user_id"));
+                        user.setUserId(resultSet.getLong("user_id"));
                         user.setUserName(resultSet.getString("user_name"));
                         return user;
                     }
                 });
 
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return null;
     }
 
     public void updateLoginInfo(User user) {

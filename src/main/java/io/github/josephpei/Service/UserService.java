@@ -12,7 +12,7 @@ public class UserService {
     private JdbcUserDao jdbcUserDao;
 
     public boolean hasMatchUser(String userName, String password) {
-        Integer count = jdbcUserDao.getMatchCount(userName, password);
+        Long count = jdbcUserDao.getMatchCount(userName, password);
         return count > 0;
     }
 

@@ -1,21 +1,32 @@
 package io.github.josephpei.domain;
 
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
+@Table(name="user_tbl")
 public class User implements Serializable{
     private static final long serialVersionUID = 1L;
 
-    private int userId;
+    @Id
+    @Column(name="user_id")
+    @GeneratedValue
+    private Long userId;
 
+    @Column(name="user_name")
     private String userName;
 
+    @Column(name="password")
     private String password;
 
+    @Column(name="last_ip")
     private String lastIp;
+
+    @Column(name="last_visit")
     private Date lastVisit;
 
     public User() {
@@ -54,15 +65,12 @@ public class User implements Serializable{
         this.userName = userName;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
-
-
-
 
 }

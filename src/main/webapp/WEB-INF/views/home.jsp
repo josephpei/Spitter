@@ -17,18 +17,51 @@
     </script>
     <style type="text/css">
         html,body{margin:10px; padding: 10px;}
+        .header{width:95%;height:50px;background:#2d2d2d;top:0px;position:fixed;z-index:2;
+        }
+        .main{width:100%; margin-top:50px;}
+        .footer{position:fixed;bottom:0px;height:50px;width:95%;
+            background:#2d2d2d;font-size: 1.5em; color: #006666}
+
+        .m-box {margin-top:50px;}
         .m-box .left,.m-box .right { height: 500px; }
 
         .m-box .left{float:left; width:800px; background-color:#ccc; }
         .m-box .right{margin-left:168px;  background-color:#666;}
         .error { color: red; font-size: 0.9em; font-weight: bold; }
+
+        ul.mblog li {
+            margin-bottom: 1em;
+            margin-right: 1em;
+        }
+        #topnav {
+            font-size: 1.5em;
+            color: #006666;
+        }
     </style>
 </head>
 <body>
-<h1>Home Page</h1>
+<div class="header">
+    <table id="topnav">
+        <tr>
+            <td>Home</td>
+            <td>About</td>
+        </tr>
+    </table>
+</div>
 
 <div class="m-box">
-    <div class="left">左</div>
+    <div class="left">
+        <div>
+            <ul class="mblog">
+                <c:forEach var="spittle" items="${spittleList}">
+                    <li>
+                        ${spittle.user.userName}, ${spittle.pushTime}, ${spittle.text}
+                    </li>
+                </c:forEach>
+            </ul>
+        </div>
+    </div>
 
     <div class="right">
         <p>Login</p>
@@ -63,6 +96,8 @@
     </div>
 </div>
 
-<p>footer</p>
+<div class="footer">
+    Copyright josephpei!
+</div>
 </body>
 </html>
