@@ -40,20 +40,15 @@ public class HomeController {
     private RegistrationValidator registrationValidator;
 
 
-//    @RequestMapping(value={"/", "/home.html"}, method = RequestMethod.GET)
-//    public String hello() {
-//        return "home";
-//    }
-
-    @RequestMapping(value="/", method = RequestMethod.GET)
+    @RequestMapping(value="index", method = RequestMethod.GET)
     public String loginCommand(Model model){
         List<Spittle> spittleList = hibSpittleService.getRecentSpittles(5);
         model.addAttribute("spittleList", spittleList);
         model.addAttribute("loginCommand", new LoginCommand());
-        return "home";
+        return "index";
     }
 
-    @RequestMapping(value="/", method = RequestMethod.POST)
+    @RequestMapping(value="index", method = RequestMethod.POST)
     public ModelAndView loginCheck(@ModelAttribute("loginCommand") @Valid LoginCommand loginCommand,
                                    BindingResult result,
                                    HttpServletRequest request, Model model) {
@@ -62,7 +57,7 @@ public class HomeController {
         String pass = loginCommand.getPassword();
 
         if (result.hasErrors()) {
-            return new ModelAndView("home");
+            return new ModelAndView("index");
         }
 
 //        String kaptchaExpected = (String) request.getSession().getAttribute(
@@ -74,14 +69,14 @@ public class HomeController {
         String secretPass = DigestUtils.md5Hex(salt + pass);
         boolean valid = hibUserService.hasMatchUser(name, secretPass);
         if (!valid) {
-            return new ModelAndView("redirect:/", "fatal", "Username or password error!");
+            return new ModelAndView("redirect:index", "fatal", "Username or password error!");
         } else {
             User user = hibUserService.findUserByName(name);
             user.setLastIp(request.getRemoteAddr());
             user.setLastVisit(new java.sql.Timestamp((new java.util.Date()).getTime()));
             hibUserService.loginSuccess(user);
             request.getSession().setAttribute("user", user);
-            String userPage ="redirect:user_home";// "redirect:user/" + name;
+            String userPage = "redirect:u/" + name;
             return new ModelAndView(userPage);
         }
 
@@ -111,6 +106,6 @@ public class HomeController {
         hibUserService.insertUser(user);
 
         model.addAttribute("loginCommand", new LoginCommand());
-        return "home";
+        return "index";
     }
 }

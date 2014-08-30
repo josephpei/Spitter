@@ -34,4 +34,19 @@ public class HibSpittleDao implements SpittleDao {
     public void addSpittle(Spittle spittle) {
         sessionFactory.getCurrentSession().save(spittle);
     }
+
+    @Override
+    public Spittle getSpittleById(Long id) {
+        String hql = "from Spittle where spittleId=:id";
+        Query q = sessionFactory.getCurrentSession().createQuery(hql);
+        q.setParameter("id", id);
+        if (!q.list().isEmpty())
+            return (Spittle) q.list().get(0);
+        return null;
+    }
+
+    @Override
+    public void delSpittle(Spittle spittle) {
+        sessionFactory.getCurrentSession().delete(spittle);
+    }
 }

@@ -5,8 +5,8 @@
 <head>
     <meta charset="utf-8">
     <title>Home Page</title>
-    <script src="/static/js/jquery-1.11.0.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="static/css/main.css">
+    <script src="/resources/js/jquery-1.11.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/resources/css/main.css">
     <script>
         $(document).ready(
                 function (){

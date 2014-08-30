@@ -10,4 +10,6 @@ public interface SpittleDao {
     public List<Spittle> getRecentSpittles(int spittlesNumber);
     public List<Spittle> getSpittlesForUser(User user);
     public void addSpittle(Spittle spittle);
+    public Spittle getSpittleById(Long id);
+    public void delSpittle(Spittle spittle);
 }

@@ -1,6 +1,8 @@
 package io.github.josephpei.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -51,6 +53,7 @@ public class Spittle implements Serializable {
     private String text;
 
     @Column(name="push_time")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pushTime;
 
     @JoinColumn(name="user_id", referencedColumnName = "user_id")

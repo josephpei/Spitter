@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>Register</title>
-    <script src="static/js/jquery-1.11.0.min.js"></script>
+    <script src="/resources/js/jquery-1.11.0.min.js"></script>
 
     <style type="text/css">
         .error { color: red; font-size: 0.9em; font-weight: bold; }

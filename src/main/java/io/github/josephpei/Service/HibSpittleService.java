@@ -29,4 +29,10 @@ public class HibSpittleService {
     public void addSpittle(Spittle spittle) {
         hibSpittleDao.addSpittle(spittle);
     }
+
+    @Transactional
+    public void delSpittleById(Long id) {
+        Spittle spittle = hibSpittleDao.getSpittleById(id);
+        hibSpittleDao.delSpittle(spittle);
+    }
 }
